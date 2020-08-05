@@ -1,40 +1,48 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
+import { APIConst } from '@/config';
 
 /**
  * Get all todos
  */
 const getAll = async () => {
-  const data = await request.call('/todos', { method: 'get' })
-  return data
-}
+  const api = APIConst.todo.list();
+  const data = await request.call(api.url, { method: api.method });
+  return data;
+};
 
 /**
  * Change status
  */
 const changeStatus = async ({ _id }: { _id: string }) => {
-  const data = await request.call(`/todos/select/${_id}`, { method: 'patch' })
-  return data
-}
+  const api = APIConst.todo.changeStatus(_id);
+  const data = await request.call(api.url, { method: api.method });
+  return data;
+};
 
 /**
  * Change status all
  */
 const changeStatusAll = async () => {
-  const data = await request.call(`/todos`, { method: 'put' })
-  return data
-}
+  const api = APIConst.todo.changeStatusAll();
+  const data = await request.call(api.url, { method: api.method });
+  return data;
+};
 
 /**
- * Change status all
+ * Create new todo
  */
 const create = async (payload: any) => {
-  const data = await request.call(`/todos`, { method: 'post', data: payload })
-  return data
-}
+  const api = APIConst.todo.create();
+  const data = await request.call(api.url, {
+    method: api.method,
+    data: payload,
+  });
+  return data;
+};
 
 export default {
   getAll,
   changeStatus,
   changeStatusAll,
   create,
-}
+};

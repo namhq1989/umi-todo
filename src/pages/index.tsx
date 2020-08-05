@@ -1,46 +1,53 @@
 import React from 'react';
-import { Row, Col, Spin, Button, Input } from 'antd';
-import { connect, Loading } from 'umi'
+import { Row, Col, Spin } from 'antd';
+import { connect, Loading, ConnectProps, Dispatch } from 'umi';
 import ListTodos from './components/list-todo';
 import CreateTodo from './components/new-todo';
-import { TodoRecord, PageProps, TodoState } from './interface'
-import styles from './style.less'
+import { TodoRecord, TodoState } from './interface';
+import styles from './style.less';
 import notification from '@/utils/notification';
+
+// Page props
+export interface PageProps extends ConnectProps {
+  todo: TodoState;
+  dispatch: Dispatch;
+  loading: boolean;
+}
 
 class TodoPage extends React.Component<PageProps, any> {
   // Sau khi load components xong, gọi hàm "fetch" ở todo để lấy data từ server
   componentDidMount() {
     this.props.dispatch({
       type: 'todo/fetch',
-    })
+    });
   }
 
   onSelectItem = (record: TodoRecord) => {
     this.props.dispatch({
       type: 'todo/changeStatus',
       payload: record,
-    })
-  }
+    });
+  };
 
   onSelectAll = () => {
     this.props.dispatch({
       type: 'todo/changeStatusAll',
-    })
-  }
+    });
+  };
 
   onCreateTodo = (value: string, resetValue: Function) => {
-    if (!value) return notification.error('Vui lòng nhập nội dung todo')
+    if (!value) return notification.error('Vui lòng nhập nội dung todo');
     this.props.dispatch({
       type: 'todo/create',
       payload: {
         content: value,
         resetValue: resetValue,
       },
-    })
-  }
+    });
+  };
 
   render() {
-    const { todo, loading } = this.props
+    const { todo, loading } = this.props;
 
     return (
       <Row justify="center">
@@ -58,12 +65,14 @@ class TodoPage extends React.Component<PageProps, any> {
       </Row>
     );
   }
-};
+}
 
 // "connect" dùng để connect view tới model
 // "todo" là tên của namespace khai báo trên model
 // "loading" là biến boolean mà model sẽ tự sinh ra khi có 1 hàm dispatch được gọi
-export default connect(({ todo, loading }: { todo: TodoState; loading: Loading }) => ({
-  todo,
-  loading: loading.models.todo,
-}))(TodoPage);
+export default connect(
+  ({ todo, loading }: { todo: TodoState; loading: Loading }) => ({
+    todo,
+    loading: loading.models.todo,
+  }),
+)(TodoPage);
